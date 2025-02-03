@@ -38,6 +38,26 @@ class _MatchAddState extends State<MatchAdd> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextField(
+                controller: match.location,
+                decoration: InputDecoration(
+                    hintText:
+                    "Location"
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                controller: match.date,
+                decoration: InputDecoration(
+                    hintText:
+                    "Date"
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
                 controller: match.firstteam,
                 decoration: InputDecoration(
                     hintText:

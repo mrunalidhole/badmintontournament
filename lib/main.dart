@@ -1,7 +1,6 @@
 import 'package:badmintontournament/projectui/draw.dart';
 import 'package:badmintontournament/projectui/matches.dart';
 import 'package:badmintontournament/projectui/progress.dart';
-import 'package:badmintontournament/projectui/score.dart';
 import 'package:badmintontournament/projectui/team.dart';
 import 'package:badmintontournament/projectui/tournament.dart';
 import 'package:badmintontournament/provider/matchprovider.dart';
@@ -48,7 +47,6 @@ class _MainScreenState extends State<MainScreen> {
     TournamentScreen(),
     DrawScreen(),
     MatchesScreen(),
-    ScoreScreen(),
     ProgressScreen()
   ];
 
@@ -109,14 +107,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 label: "Matches"
             ),
-            BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.score,
-                  size: 30,
-                  color: Colors.black,
-                ),
-                label: "Score"
-            ),
+
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.military_tech,
