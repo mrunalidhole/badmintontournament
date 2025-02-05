@@ -1,6 +1,5 @@
 import 'package:badmintontournament/projectui/tournamentform.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TournamentScreen extends StatefulWidget {
@@ -30,15 +29,18 @@ class _TournamentScreenState extends State<TournamentScreen> {
   deleteTournament(int index) async {
     String tournamentId = tournament[index]["id"].toString();
 
-    // Deleting the tournament from Supabase
-    final response = await Supabase.instance.client.from('addtournament').delete().eq('id', tournamentId);
+    try {
+      // Delete from Supabase first
+      await Supabase.instance.client.from('addtournament').delete().eq('id', tournamentId);
 
-    // Check if the deletion was successful
-    if (response.error == null) {
+      // Update UI only after successful deletion
       setState(() {
-        tournament.removeAt(index); // Remove from local list and update UI
+        tournament.removeAt(index);
       });
-    } else {
+    } catch (error) {
+      debugPrint("Error deleting team: $error");
+
+      // Show error message if deletion fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error deleting tournament")),
       );
@@ -50,8 +52,9 @@ class _TournamentScreenState extends State<TournamentScreen> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TournamentForm()));
+          onPressed: () async{
+            await Navigator.push(context, MaterialPageRoute(builder: (context) => TournamentForm()));
+            FetchTournament();
           },
           backgroundColor: Colors.black,
           child: Icon(

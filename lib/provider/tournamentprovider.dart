@@ -6,12 +6,31 @@ class TournamentProvider extends ChangeNotifier{
   TextEditingController location = TextEditingController();
   TextEditingController date = TextEditingController();
 
+  DateTime? _selectedDate;
+  DateTime? get selectedDate => _selectedDate;
+  void setDate(DateTime date){
+    _selectedDate = date;
+    notifyListeners();
+  }
+
   Future<bool> AddTournament()async{
-    final response = await Supabase.instance.client.from('addtournament').insert({
-      'title': title.text,
-      'location': location.text,
-      'date': date.text
-    });
+    try {
+      final response = await Supabase.instance.client.from('addtournament')
+          .insert({
+        'title': title.text,
+        'location': location.text,
+        'date': date.text
+      });
+
+
+      // Clear input fields after adding
+      title.clear();
+      location.clear();
+      date.clear();
+      notifyListeners();
+    }catch (error) {
+      debugPrint("Error adding team: $error");
+    }
     return true;
   }
 }

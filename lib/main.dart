@@ -3,7 +3,9 @@ import 'package:badmintontournament/projectui/matches.dart';
 import 'package:badmintontournament/projectui/progress.dart';
 import 'package:badmintontournament/projectui/team.dart';
 import 'package:badmintontournament/projectui/tournament.dart';
+import 'package:badmintontournament/provider/drawprovider.dart';
 import 'package:badmintontournament/provider/matchprovider.dart';
+import 'package:badmintontournament/provider/progressprovider.dart';
 import 'package:badmintontournament/provider/teamprovider.dart';
 import 'package:badmintontournament/provider/tournamentprovider.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +24,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context)=>AddTeamProvider()),
+      providers: [
+        ChangeNotifierProvider(create: (context)=>AddTeamProvider()),
       ChangeNotifierProvider(create: (context)=>TournamentProvider()),
-      ChangeNotifierProvider(create: (context)=>MatchProvider())],
+      ChangeNotifierProvider(create: (context)=>MatchProvider()),
+      ChangeNotifierProvider(create: (context)=>DrawProvider()),
+        ChangeNotifierProvider(create: (context)=>ProgressProvider()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: MainScreen(),
@@ -60,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: pages[index],
       bottomNavigationBar: Consumer<AddTeamProvider>(
-        builder: (context, mainpage, child)=>BottomNavigationBar(
+        builder: (context, team, child)=>BottomNavigationBar(
           currentIndex: index,
           onTap: onTap,
           type: BottomNavigationBarType.fixed,

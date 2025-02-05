@@ -1,22 +1,6 @@
 import 'package:badmintontournament/projectui/teamform.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:country_flags/country_flags.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TeamScreen(),
-    );
-  }
-}
 
 class TeamScreen extends StatefulWidget {
   const TeamScreen({super.key});
@@ -42,33 +26,36 @@ class _TeamScreenState extends State<TeamScreen> {
     });
   }
 
-  // Delete team from Supabase and update the local list
   deleteTeam(int index) async {
-    String teamId = team[index]["id"].toString(); // Ensure the ID exists
+    String teamId = team[index]["id"].toString();
 
-    // Deleting the team from Supabase
-    final response = await Supabase.instance.client.from('addteam').delete().eq('id', teamId);
+    try {
+      // Delete from Supabase first
+      await Supabase.instance.client.from('addteam').delete().eq('id', teamId);
 
-    // Check if the deletion was successful
-    if (response.error == null) {
+      // Update UI only after successful deletion
       setState(() {
-        team.removeAt(index); // Remove from local list and update UI
+        team.removeAt(index);
       });
-    } else {
-      // Handle error if any (you can show a Snackbar or Toast here)
+    } catch (error) {
+      debugPrint("Error deleting team: $error");
+
+      // Show error message if deletion fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error deleting team")),
       );
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TeamForm()));
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          onPressed: () async{
+            await Navigator.push(context, MaterialPageRoute(builder: (context) => TeamForm()));
+            FetchTeam();
           },
           backgroundColor: Colors.black,
           child: Icon(
@@ -77,6 +64,7 @@ class _TeamScreenState extends State<TeamScreen> {
           ),
         ),
         appBar: AppBar(
+          backgroundColor: Colors.white,
           title: Text(
             "Teams",
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -89,11 +77,11 @@ class _TeamScreenState extends State<TeamScreen> {
               itemBuilder: (BuildContext context, int i) {
                 return SingleChildScrollView(
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.16,
+                    height: MediaQuery.of(context).size.height * 0.22,
                     child: Column(
                       children: [
                         Container(
-                          height: MediaQuery.of(context).size.height * 0.12,
+                          height: MediaQuery.of(context).size.height * 0.18,
                           decoration: BoxDecoration(
                             color: Colors.grey.shade300,
                           ),
@@ -104,14 +92,18 @@ class _TeamScreenState extends State<TeamScreen> {
                               Container(
                                 height: 35,
                                 width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(color: Colors.grey.shade400),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade400
+                                ),
                                 child: Row(
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(left: 20),
                                       child: Text(
                                         team[i]["teamname"],
-                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                     Spacer(),
@@ -119,7 +111,7 @@ class _TeamScreenState extends State<TeamScreen> {
                                       padding: const EdgeInsets.only(right: 20),
                                       child: IconButton(
                                         onPressed: () {
-                                          deleteTeam(i); // Call delete function
+                                          deleteTeam(i);
                                         },
                                         icon: Icon(
                                           Icons.delete_outline,
@@ -133,9 +125,29 @@ class _TeamScreenState extends State<TeamScreen> {
                               SizedBox(height: 8),
                               Padding(
                                 padding: const EdgeInsets.only(left: 20),
-                                child: Text(
-                                  "Player Name: ${team[i]["playername"]}",
-                                  style: TextStyle(fontSize: 16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      team[i]["country"],
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    SizedBox(height: 8,),
+                                    Text(
+                                        "Player No.: ${i + 1}",
+                                      style: TextStyle(
+                                        fontSize: 16
+                                      ),
+                                    ),
+                                    Text(
+                                      "Player Name: ${team[i]["playername"]}",
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -146,6 +158,7 @@ class _TeamScreenState extends State<TeamScreen> {
                   ),
                 );
               }),
-        ));
+        )
+    );
   }
 }

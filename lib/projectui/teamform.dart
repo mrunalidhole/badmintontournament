@@ -37,6 +37,15 @@ class _TeamFormState extends State<TeamForm> {
              Padding(
                padding: const EdgeInsets.all(20.0),
                child: TextField(
+                 controller: team.country,
+                 decoration: InputDecoration(
+                     hintText: "Country"
+                 ),
+               ),
+             ),
+             Padding(
+               padding: const EdgeInsets.all(20.0),
+               child: TextField(
                  controller: team.playername,
                  decoration: InputDecoration(
                      hintText: "Player Name"
@@ -54,9 +63,9 @@ class _TeamFormState extends State<TeamForm> {
                      borderRadius: BorderRadius.circular(10)
                    )
                  ),
-                   onPressed: (){
-                   team.AddTeam();
-                   Navigator.push(context, MaterialPageRoute(builder: (context)=>TeamScreen()));
+                   onPressed: () async{
+                   await team.AddTeam();
+                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TeamScreen()));
                    },
                    child: Text(
                      "Add Team",

@@ -1,70 +1,67 @@
+import 'package:badmintontournament/projectui/progress.dart';
 import 'package:badmintontournament/projectui/tournament.dart';
+import 'package:badmintontournament/provider/progressprovider.dart';
 import 'package:badmintontournament/provider/tournamentprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TournamentForm extends StatefulWidget {
-  const TournamentForm({super.key});
+class ProgressForm extends StatefulWidget {
+  const ProgressForm({super.key});
 
   @override
-  State<TournamentForm> createState() => _TeamFormState();
+  State<ProgressForm> createState() => _TeamFormState();
 }
 
-class _TeamFormState extends State<TournamentForm> {
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    
-  }
+class _TeamFormState extends State<ProgressForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Create Tournament",
+          "Add Progress",
           style: TextStyle(
               fontWeight: FontWeight.bold
           ),
         ),
       ),
-      body: Consumer<TournamentProvider>(
-        builder: (context, tournament, child)=>Column(
+      body: Consumer<ProgressProvider>(
+        builder: (context, progress, child)=>Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextField(
-                controller: tournament.title,
+                controller: progress.teamname,
                 decoration: InputDecoration(
-                    hintText: "Title"
+                    hintText: "Team Name"
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextField(
-                controller: tournament.location,
+                controller: progress.country,
                 decoration: InputDecoration(
-                    hintText: "Location"
+                    hintText: "Country"
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextField(
-                controller: tournament.date,
-                readOnly: true, // Makes the field non-editable
+                controller: progress.playername,
                 decoration: InputDecoration(
-                  labelText: "Select Date",
-                  suffixIcon: Icon(Icons.calendar_today),
-                  border: OutlineInputBorder(),
+                    hintText: "PlayerName"
                 ),
-                onTap: () => _selectDate(context),
+              ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                controller: progress.score,
+                decoration: InputDecoration(
+                    hintText: "Score"
+                ),
+              ),
             ),
             SizedBox(height: 20,),
             Container(
@@ -78,11 +75,11 @@ class _TeamFormState extends State<TournamentForm> {
                     )
                 ),
                 onPressed: () async{
-                  await tournament.AddTournament();
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TournamentScreen()));
+                  await progress.AddProgress();
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ProgressScreen()));
                 },
                 child: Text(
-                  "Create",
+                  "Add",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black
